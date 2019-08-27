@@ -1,23 +1,19 @@
 require 'card'
 
 describe Card do
+  before do
+    subject.top_up(1)
+  end
+
   it { is_expected.to respond_to(:balance)}
 
   describe '.top_up' do
     it 'increases the balance by value' do
       subject.top_up(5)
-      expect(subject.balance).to eq 5
+      expect(subject.balance).to eq 6
     end
       it 'Cant exceed top up limit' do
-        expect{ subject.top_up(91) }.to raise_error("exceeds £#{$DEFAULT_LIMIT}")
-      end
-    end
-
-    describe ".deduct" do
-      it "deducts value from balance" do
-        subject.top_up(10)
-        subject.deduct(6)
-        expect(subject.balance).to eq(4)
+        expect{ subject.top_up($DEFAULT_LIMIT) }.to raise_error("exceeds £#{$DEFAULT_LIMIT}")
       end
     end
 
@@ -26,6 +22,15 @@ describe Card do
         subject.touch_in
         expect(subject.touched_in).to eq(true)
       end
+
+      context 'card balance is lower than minimum' do
+        before do
+          subject.touch_out
+        end
+        it "raises an error" do
+          expect{subject.touch_in}.to raise_error("Insufficient funds")
+        end
+      end
     end
 
     describe ".touch_out" do
@@ -33,6 +38,10 @@ describe Card do
         subject.touch_in
         subject.touch_out
         expect(subject.touched_in).to eq(false)
+      end
+
+      it "deducts correct amount from card ($MINIMUM_FARE)" do
+        expect{subject.touch_out}.to change{subject.balance}.by(-$MINIMUM_FARE)
       end
     end
 
