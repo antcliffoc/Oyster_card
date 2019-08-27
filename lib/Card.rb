@@ -2,6 +2,8 @@ class Card
   attr_reader :balance
   attr_reader :touched_in
   attr_reader :entry_station
+  attr_reader :journeys
+
   $DEFAULT_LIMIT = 90
   $MINIMUM_FARE = 1
 
@@ -10,6 +12,7 @@ class Card
     @limit = limit
     @min = $MINIMUM_FARE
     @entry_station = nil
+    @journeys = []
   end
 
   def top_up(value)
@@ -24,7 +27,8 @@ class Card
     @entry_station = station
   end
 
-  def touch_out
+  def touch_out(exit_station)
+    @journeys << {entry: @entry_station, exit: exit_station}
     @entry_station = nil
     deduct
   end

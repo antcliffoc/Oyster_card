@@ -5,8 +5,15 @@ describe Card do
     subject.top_up(1)
   end
   let(:station) { double(:station) }
+  let(:station2) { double(:station) }
+
 
   it { is_expected.to respond_to(:balance)}
+  it { is_expected.to respond_to(:journeys)}
+
+  it "stores an array journeys" do
+    expect(subject.journeys).to be_empty
+  end
 
   describe '.top_up' do
     it 'increases the balance by value' do
@@ -31,7 +38,7 @@ describe Card do
 
       context 'card balance is lower than minimum' do
         before do
-          subject.touch_out
+          subject.touch_out(station2)
         end
         it "raises an error" do
           expect{subject.touch_in(station)}.to raise_error("Insufficient funds")
@@ -42,12 +49,12 @@ describe Card do
     describe ".touch_out" do
       it "sets card as touched_in" do
         subject.touch_in(station)
-        subject.touch_out
+        subject.touch_out(station2)
         expect(subject).not_to be_in_journey
       end
 
       it "deducts correct amount from card ($MINIMUM_FARE)" do
-        expect{subject.touch_out}.to change{subject.balance}.by(-$MINIMUM_FARE)
+        expect{subject.touch_out(station2)}.to change{subject.balance}.by(-$MINIMUM_FARE)
       end
     end
 
@@ -62,7 +69,7 @@ describe Card do
       end
       context "when not in journey" do
         before do
-          subject.touch_out
+          subject.touch_out(station2)
         end
         it "returns false" do
           expect(subject).not_to be_in_journey
@@ -70,5 +77,14 @@ describe Card do
       end
     end
 
+    describe "saving one journey" do
+      before do
+        subject.touch_in(station)
+        subject.touch_out(station2)
+      end
+      it "stores exit and entry stations for journey" do
+        expect(subject.journeys).to include(entry: station, exit: station2)
+      end
+    end
 
   end
