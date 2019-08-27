@@ -8,5 +8,8 @@ describe Card do
       subject.top_up(5)
       expect(subject.balance).to eq 5
     end
+      it 'Cant exceed top up limit' do
+        expect{ subject.top_up(91) }.to raise_error("exceeds £#{$DEFAULT_LIMIT}")
+      end
+    end
   end
-end
