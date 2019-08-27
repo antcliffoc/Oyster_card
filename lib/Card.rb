@@ -1,14 +1,15 @@
 class Card
   attr_reader :balance
   attr_reader :touched_in
+  attr_reader :entry_station
   $DEFAULT_LIMIT = 90
   $MINIMUM_FARE = 1
 
   def initialize(limit = $DEFAULT_LIMIT)
     @balance = 0
     @limit = limit
-    @touched_in = false
     @min = $MINIMUM_FARE
+    @entry_station = nil
   end
 
   def top_up(value)
@@ -18,24 +19,24 @@ class Card
 
 
 
-  def touch_in
+  def touch_in(station)
     raise "Insufficient funds" if @balance < @min
-    @touched_in = true
+    @entry_station = station
   end
 
   def touch_out
-    @touched_in = false
+    @entry_station = nil
     deduct
   end
 
   def in_journey?
-    @touched_in
+    @entry_station != nil
   end
-  
+
   private
 
   def deduct(value = @min)
     @balance -= value
   end
-  
+
 end
