@@ -1,0 +1,16 @@
+requirements:
+
+1) Card class
+2) Card class has attribute money, which is stored for each instance
+3) "add" method for Card class - guard statement for if result of add(value) exceeds limit
+4) Card class needs default limit (CONSTANT)
+5) "deduct money" method for Card class
+6) touch_in method and touch_out method for Card class
+7) @in variable that needs to be edited by touch_in/touch_out methods
+8) Barrier class
+9) guard statement for touch_in
+10) Barrier class requires charge attribute with default value
+11) touch_out method triggers payment on a given barrier, with value set on instantiation of Barrier
+12) touch_in station and touch_out station to be stored
+13) Station class with initialize variables name, £charge, zone
+14) penalty fare charged if touch_out happens when Card.new.in? == false
